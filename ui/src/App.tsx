@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
   type FormEvent,
@@ -30,6 +31,10 @@ import {
   LockKeyhole,
   Menu,
   MoreHorizontal,
+  Maximize2,
+  Minimize2,
+  PanelRightClose,
+  PanelRightOpen,
   Play,
   Plus,
   RefreshCw,
@@ -1349,10 +1354,37 @@ function TaskDialog({
 }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [playbackError, setPlaybackError] = useState(false);
+  const [infoVisible, setInfoVisible] = useState(
+    () => window.matchMedia("(min-width: 900px)").matches,
+  );
+  const [maximized, setMaximized] = useState(false);
+  const [narrow, setNarrow] = useState(
+    () => window.matchMedia("(max-width: 899px)").matches,
+  );
+  const panelId = useId();
+  const infoButton = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     setConfirmDelete(false);
     setPlaybackError(false);
+    setMaximized(false);
+    setInfoVisible(window.matchMedia("(min-width: 900px)").matches);
   }, [task?.id, open]);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 899px)");
+    const change = () => {
+      setNarrow(media.matches);
+      if (media.matches) setInfoVisible(false);
+    };
+    media.addEventListener("change", change);
+    return () => media.removeEventListener("change", change);
+  }, []);
+  const saved = !!task && ["completed", "partial"].includes(task.status);
+  const playable =
+    saved &&
+    (task?.files?.some(
+      (file) => file.kind === "video" && file.state === "done",
+    ) ||
+      !task?.files?.length);
   return (
     <Dialog
       open={open}
@@ -1360,214 +1392,326 @@ function TaskDialog({
         if (!value) onClose();
       }}
     >
-      <DialogContent className="max-w-2xl">
-        <DialogTitle>
-          {confirmDelete
-            ? "删除这个作品？"
-            : task?.status === "completed"
-              ? "重温这一刻"
-              : "下载详情"}
-        </DialogTitle>
-        <DialogDescription>
-          {confirmDelete
-            ? "本地视频、图集图片、封面、收藏状态和下载记录将一起删除。"
-            : task
-              ? `@${task.author} · ${statuses[task.status]}`
-              : ""}
-        </DialogDescription>
-        {task &&
-          (confirmDelete ? (
-            <>
-              <p className="text-sm leading-6 text-muted-foreground">
-                {task.title}
-              </p>
-              <div className="flex justify-end gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setConfirmDelete(false)}
-                >
-                  保留作品
-                </Button>
-                <Button
-                  variant="destructive"
-                  disabled={!!pending}
-                  onClick={() => void onAction(task, "delete")}
-                >
-                  {pending ? (
-                    <LoaderCircle className="animate-spin" />
-                  ) : (
-                    <Trash2 />
-                  )}
-                  确认删除
-                </Button>
-              </div>
-            </>
-          ) : (
-            <>
-              {task.kind === "image_album" ? (
-                <AlbumGallery
-                  content={task}
-                  saved={["completed", "partial"].includes(task.status)}
-                />
-              ) : ["completed", "partial"].includes(task.status) &&
-                (task.files?.some(
-                  (file) => file.kind === "video" && file.state === "done",
-                ) ||
-                  !task.files?.length) ? (
-                <video
-                  key={task.id}
-                  className="video-player"
-                  controls
-                  playsInline
-                  preload="metadata"
-                  src={`/api/tasks/${task.id}/file`}
-                  onError={() => setPlaybackError(true)}
-                />
-              ) : (
-                <div className="preview-cover">
-                  <Cover video={task} />
-                </div>
-              )}
-              {playbackError && (
-                <p role="alert" className="inline-error">
-                  <CircleAlert size={15} />
-                  视频暂时无法播放，可能是文件缺失或编码不受支持。可尝试导出视频，使用本地播放器打开。
-                </p>
-              )}
-              <h3 className="detail-title">{task.title}</h3>
-              <div className="detail-meta">
-                <span>
-                  <Clock3 size={14} />
-                  {task.kind === "image_album"
-                    ? `${task.image_count} 张图片`
-                    : duration(task.duration)}
-                </span>
-                <span>
-                  <HardDrive size={14} />
-                  {bytes(task.downloaded)}
-                </span>
-                <span>
-                  {task.kind === "image_album"
-                    ? `${task.files_completed}/${task.files_total} 个文件已保存`
-                    : `${task.width} × ${task.height}`}
-                </span>
-              </div>
-              {task.error && (
-                <div className="inline-error">
-                  <CircleAlert size={15} />
-                  {task.error}
-                </div>
-              )}
-              {task.files?.length > 0 && (
-                <details className="stored-files">
-                  <summary>
-                    文件清单 · {task.files_completed}/{task.files_total} 已保存
-                  </summary>
-                  <ul>
-                    {task.files.map((file) => (
-                      <li key={file.name}>
-                        <span>
-                          {file.name}
-                          <small>
-                            {file.state === "done"
-                              ? `${bytes(file.bytes)}${file.retained ? " · 保留上次文件" : ""}`
-                              : file.error || "等待保存"}
-                          </small>
-                        </span>
-                        {file.state === "done" &&
-                        ["completed", "partial"].includes(task.status) ? (
-                          <a
-                            href={`/api/tasks/${task.id}/files/${file.name}?download=1`}
-                            aria-label={`导出 ${file.name}`}
-                          >
-                            <ArrowDownToLine size={16} />
-                          </a>
-                        ) : (
-                          <CircleAlert size={15} />
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              )}
-              <Button variant="outline" onClick={() => onAuthor(task)}>
-                <UsersRound />
-                查看作者全部作品
-                <ArrowRight />
+      <DialogContent
+        onEscapeKeyDown={(event) => {
+          if (!confirmDelete && narrow && infoVisible) {
+            event.preventDefault();
+            setInfoVisible(false);
+            infoButton.current?.focus({ preventScroll: true });
+          }
+        }}
+        className={
+          confirmDelete
+            ? "max-w-lg"
+            : cn("work-detail-dialog", maximized && "work-detail-maximized")
+        }
+      >
+        {confirmDelete ? (
+          <>
+            <DialogTitle>删除这个作品？</DialogTitle>
+            <DialogDescription>
+              本地视频、图集图片、封面、收藏状态和下载记录将一起删除。
+            </DialogDescription>
+            <p className="text-sm leading-6 text-muted-foreground">
+              {task?.title}
+            </p>
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setConfirmDelete(false)}>
+                保留作品
               </Button>
-              <div className="detail-actions">
-                {["completed", "partial"].includes(task.status) &&
-                  (task.kind === "image_album" ||
-                    !task.files?.length ||
-                    task.files.some(
-                      (file) => file.kind === "video" && file.state === "done",
-                    )) && (
-                    <Button asChild>
-                      <a href={`/api/tasks/${task.id}/file?download=1`}>
-                        <ArrowDownToLine />
-                        {task.kind === "image_album"
-                          ? "打包导出图集"
-                          : "导出视频"}
-                      </a>
-                    </Button>
-                  )}
-                {["completed", "partial"].includes(task.status) &&
-                  task.kind !== "image_album" && (
-                    <Button variant="outline" asChild>
-                      <a href={`/api/tasks/${task.id}/archive`}>
-                        <FolderDown />
-                        导出全部文件
-                      </a>
-                    </Button>
-                  )}
-                {["failed", "canceled", "partial"].includes(task.status) && (
-                  <Button
-                    disabled={!!pending}
-                    onClick={() => void onAction(task, "retry")}
-                  >
-                    <RefreshCw />
-                    重新下载
-                  </Button>
-                )}
-                {["queued", "downloading"].includes(task.status) && (
-                  <Button
-                    variant="outline"
-                    disabled={!!pending}
-                    onClick={() => void onAction(task, "cancel")}
-                  >
-                    <X />
-                    取消下载
-                  </Button>
-                )}
-                <Button variant="outline" asChild>
-                  <a href={task.source_url} target="_blank" rel="noreferrer">
-                    <ExternalLink />
-                    抖音原作品
-                  </a>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label={task.favorite ? "取消收藏" : "收藏作品"}
-                  aria-pressed={task.favorite}
-                  disabled={!!pending}
-                  onClick={() => void onAction(task, "favorite")}
-                >
-                  <Heart fill={task.favorite ? "currentColor" : "none"} />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="ml-auto text-destructive"
-                  aria-label="删除作品和记录"
-                  disabled={!!pending}
-                  onClick={() => setConfirmDelete(true)}
-                >
+              <Button
+                variant="destructive"
+                disabled={!!pending}
+                onClick={() => {
+                  if (task) void onAction(task, "delete");
+                }}
+              >
+                {pending ? (
+                  <LoaderCircle className="animate-spin" />
+                ) : (
                   <Trash2 />
-                </Button>
+                )}
+                确认删除
+              </Button>
+            </div>
+          </>
+        ) : (
+          task && (
+            <>
+              <header className="work-detail-header">
+                <span className="work-detail-symbol">
+                  {task.kind === "image_album" ? (
+                    <Images size={19} aria-hidden="true" />
+                  ) : (
+                    <VideoIcon size={19} aria-hidden="true" />
+                  )}
+                </span>
+                <div className="work-detail-heading">
+                  <DialogTitle title={task.title}>
+                    {task.title || "作品详情"}
+                  </DialogTitle>
+                  <DialogDescription>
+                    @{task.author} · {statuses[task.status]}
+                  </DialogDescription>
+                </div>
+                <div className="work-detail-tools">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="work-maximize-button"
+                    aria-label={maximized ? "退出最大化预览" : "最大化预览"}
+                    title={maximized ? "退出最大化预览" : "最大化预览"}
+                    aria-pressed={maximized}
+                    onClick={() => {
+                      setMaximized(!maximized);
+                      if (!maximized) setInfoVisible(false);
+                    }}
+                  >
+                    {maximized ? <Minimize2 /> : <Maximize2 />}
+                  </Button>
+                  <Button
+                    ref={infoButton}
+                    variant="outline"
+                    size="sm"
+                    aria-controls={panelId}
+                    aria-expanded={infoVisible}
+                    onClick={() => setInfoVisible(!infoVisible)}
+                  >
+                    {infoVisible ? <PanelRightClose /> : <PanelRightOpen />}
+                    {narrow
+                      ? infoVisible
+                        ? "返回预览"
+                        : "作品信息"
+                      : infoVisible
+                        ? "收起信息"
+                        : "作品信息"}
+                  </Button>
+                </div>
+              </header>
+              <div className="work-detail-body" data-info={infoVisible}>
+                <div
+                  className="work-detail-main"
+                  inert={narrow && infoVisible ? true : undefined}
+                  aria-hidden={narrow && infoVisible ? true : undefined}
+                >
+                  {task.kind === "image_album" ? (
+                    <AlbumGallery
+                      content={task}
+                      saved={saved}
+                      viewer
+                      focusMode={maximized}
+                      keyboardEnabled={!narrow || !infoVisible}
+                    />
+                  ) : (
+                    <div className="work-video-stage">
+                      {playable ? (
+                        <video
+                          key={task.id}
+                          className="video-player"
+                          controls
+                          playsInline
+                          preload="metadata"
+                          poster={task.cover}
+                          src={`/api/tasks/${task.id}/file`}
+                          onError={() => setPlaybackError(true)}
+                        />
+                      ) : (
+                        <>
+                          <Cover video={task} />
+                          <div className="work-media-pending">
+                            <span
+                              className={cn(
+                                "status-badge",
+                                `status-${task.status}`,
+                              )}
+                            >
+                              {statuses[task.status]}
+                            </span>
+                            <span>
+                              {task.files_completed}/{task.files_total}{" "}
+                              个文件已保存
+                            </span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  {playbackError && (
+                    <p role="alert" className="work-playback-error">
+                      <CircleAlert size={16} />
+                      视频暂时无法播放，可导出后使用本地播放器打开。
+                    </p>
+                  )}
+                </div>
+                <aside
+                  id={panelId}
+                  className="work-detail-info"
+                  aria-label="作品信息"
+                  hidden={!infoVisible}
+                >
+                  <div className="work-info-heading">
+                    <h2>作品信息</h2>
+                    {narrow && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setInfoVisible(false);
+                          infoButton.current?.focus({ preventScroll: true });
+                        }}
+                      >
+                        <ArrowRight />
+                        返回预览
+                      </Button>
+                    )}
+                  </div>
+                  <h3 className="detail-title">
+                    {task.description || task.title}
+                  </h3>
+                  <div className="detail-meta">
+                    <span>
+                      <Clock3 size={14} />
+                      {task.kind === "image_album"
+                        ? `${task.image_count} 张图片`
+                        : duration(task.duration)}
+                    </span>
+                    <span>
+                      <HardDrive size={14} />
+                      {bytes(task.downloaded)}
+                    </span>
+                    <span>
+                      {task.kind === "image_album"
+                        ? `${task.files_completed}/${task.files_total} 个文件已保存`
+                        : `${task.width} × ${task.height}`}
+                    </span>
+                  </div>
+                  {task.error && (
+                    <div className="inline-error">
+                      <CircleAlert size={15} />
+                      {task.error}
+                    </div>
+                  )}
+                  {task.files?.length > 0 && (
+                    <details className="stored-files">
+                      <summary>
+                        文件清单 · {task.files_completed}/{task.files_total}{" "}
+                        已保存
+                      </summary>
+                      <ul>
+                        {task.files.map((file) => (
+                          <li key={file.name}>
+                            <span>
+                              {file.name}
+                              <small>
+                                {file.state === "done"
+                                  ? `${bytes(file.bytes)}${file.retained ? " · 保留上次文件" : ""}`
+                                  : file.error || "等待保存"}
+                              </small>
+                            </span>
+                            {file.state === "done" &&
+                            ["completed", "partial"].includes(task.status) ? (
+                              <a
+                                href={`/api/tasks/${task.id}/files/${file.name}?download=1`}
+                                aria-label={`导出 ${file.name}`}
+                              >
+                                <ArrowDownToLine size={16} />
+                              </a>
+                            ) : (
+                              <CircleAlert size={15} />
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  )}
+                  <Button variant="outline" onClick={() => onAuthor(task)}>
+                    <UsersRound />
+                    查看作者全部作品
+                    <ArrowRight />
+                  </Button>
+                  <div className="detail-actions">
+                    {["completed", "partial"].includes(task.status) &&
+                      (task.kind === "image_album" ||
+                        !task.files?.length ||
+                        task.files.some(
+                          (file) =>
+                            file.kind === "video" && file.state === "done",
+                        )) && (
+                        <Button asChild>
+                          <a href={`/api/tasks/${task.id}/file?download=1`}>
+                            <ArrowDownToLine />
+                            {task.kind === "image_album"
+                              ? "打包导出图集"
+                              : "导出视频"}
+                          </a>
+                        </Button>
+                      )}
+                    {["completed", "partial"].includes(task.status) &&
+                      task.kind !== "image_album" && (
+                        <Button variant="outline" asChild>
+                          <a href={`/api/tasks/${task.id}/archive`}>
+                            <FolderDown />
+                            导出全部文件
+                          </a>
+                        </Button>
+                      )}
+                    {["failed", "canceled", "partial"].includes(
+                      task.status,
+                    ) && (
+                      <Button
+                        disabled={!!pending}
+                        onClick={() => void onAction(task, "retry")}
+                      >
+                        <RefreshCw />
+                        重新下载
+                      </Button>
+                    )}
+                    {["queued", "downloading"].includes(task.status) && (
+                      <Button
+                        variant="outline"
+                        disabled={!!pending}
+                        onClick={() => void onAction(task, "cancel")}
+                      >
+                        <X />
+                        取消下载
+                      </Button>
+                    )}
+                    <Button variant="outline" asChild>
+                      <a
+                        href={task.source_url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <ExternalLink />
+                        抖音原作品
+                      </a>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={task.favorite ? "取消收藏" : "收藏作品"}
+                      aria-pressed={task.favorite}
+                      disabled={!!pending}
+                      onClick={() => void onAction(task, "favorite")}
+                    >
+                      <Heart fill={task.favorite ? "currentColor" : "none"} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="ml-auto text-destructive"
+                      aria-label="删除作品和记录"
+                      disabled={!!pending}
+                      onClick={() => setConfirmDelete(true)}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </div>
+                </aside>
               </div>
             </>
-          ))}
+          )
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -208,7 +208,7 @@ func (s *Server) settings(w http.ResponseWriter, r *http.Request) {
 		writeError(w, 500, "读取设置失败")
 		return
 	}
-	writeJSON(w, 200, map[string]any{"cookie_configured": cookie != "", "cookie_revision": revision, "data_dir": s.dataDir, "concurrency": 2, "max_video_bytes": maxVideoBytes, "max_image_bytes": imageMaxBytes, "max_files": maxMediaItems, "version": "1.4.0"})
+	writeJSON(w, 200, map[string]any{"cookie_configured": cookie != "", "cookie_revision": revision, "data_dir": s.dataDir, "concurrency": 2, "max_video_bytes": maxVideoBytes, "max_image_bytes": imageMaxBytes, "max_files": maxMediaItems, "version": "1.4.1"})
 }
 func (s *Server) saveSettings(w http.ResponseWriter, r *http.Request) {
 	s.credentialMu.Lock()
