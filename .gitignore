@@ -1,0 +1,9 @@
+.DS_Store
+/data/
+/bin/
+/internal/web/static/*
+!/internal/web/static/placeholder.txt
+/ui/node_modules/
+/ui/*.tsbuildinfo
+/ui/test-results/
+/ui/playwright-report/

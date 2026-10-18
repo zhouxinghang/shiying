@@ -1,0 +1,11 @@
+拾影 / Shiying personal edition
+Based on Douyin_TikTok_Download_API.
+Copyright 2021-2026 Evil0ctal and contributors
+https://github.com/Evil0ctal/Douyin_TikTok_Download_API
+
+The native Douyin signing protocol and SM3 implementation were translated from
+this repository's src/dtk/signing/native/abogus.py, sm3.py and websign.py.
+URL, media-domain and network safety behavior references src/dtk/urls/,
+src/dtk/media/domains.py and docker/downloader/safety.go.
+
+Distributed under the Apache License, Version 2.0. See LICENSE.

@@ -1,0 +1,608 @@
+{
+  "detail_query": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&aweme_id=7000000000000000001&msToken=fixture-token",
+  "sources": {
+    "src/dtk/platforms/douyin/parser.py": "40945478379c4e5938549a13023f068b381f672afce410f867d0873f9ecb8c25",
+    "src/dtk/platforms/common.py": "cf1b1980fe90b3aa1d2e1dfcd749259fbf4781a4fd19c2bb26abfccfe59e6fa2",
+    "src/dtk/media/plan.py": "89e1a52d4625b70ad511f036d0e4cabac6f3b83eb640dde86071d59f6ec54c23",
+    "src/dtk/media/domains.py": "dce85fc2d46621d48806f9d7544a511e495faceff49c9a57949289a6acf95f82",
+    "src/dtk/urls/parse.py": "5141852b8383109fbe22d061d84e66dcec83fb793bdc0032e5c9e97513d21357",
+    "src/dtk/urls/patterns.py": "7d00afce7dbe9c8b6f1fad4eee04a203768eefa9283144f942e92f9e7501c6a7",
+    "src/dtk/platforms/douyin/params.py": "9eaa42f757faf1b46668ebaa7c580f85858287ed972924caa7cc03d32ae875e5",
+    "src/dtk/signing/native/abogus.py": "59e0cd823175cd77dd83b8edc3d7deed985276c7056acd80fe9666cfa0f3a488",
+    "src/dtk/signing/native/sm3.py": "6ad3947e11670a2bdb1fd33980f1d3da007b76421b79c95a1586455c02069669",
+    "src/dtk/signing/native/websign.py": "b31e1809de52e43f8098cbc903746d342b2128d56907542ca118af56d9c6010b",
+    "docker/downloader/download.go": "6de8db7e341f9fd7bbcbede1b6401d14ac7a35a9382f183c3cdb957837c98e8a",
+    "docker/downloader/safety.go": "529743efe7263ef1cccb5f3d8e51c23c3f6ab81610c593aa9af2556eb22fabef"
+  },
+  "cases": [
+    {
+      "fixture": "video_normal",
+      "content": {
+        "id": "7000000000000000001",
+        "title": "Sunrise over the harbour",
+        "description": "Sunrise over the harbour\nShot on a very cold morning #sunrise #harbour",
+        "kind": "video",
+        "author": "Synthetic Creator",
+        "author_uid": "MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001",
+        "source_url": "https://www.douyin.com/video/7000000000000000001",
+        "duration": 15320,
+        "tags": [
+          "sunrise",
+          "harbour"
+        ],
+        "music_id": "6800000000000000001",
+        "music_title": "original sound - Synthetic Creator",
+        "location": "Synthetic Harbour Lookout",
+        "is_deleted": false,
+        "is_private": false,
+        "manifest": {
+          "covers": [
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-origin-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-origin-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-origin-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-dynamic-cover.webp",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-dynamic-cover.webp",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-dynamic-cover.webp"
+              ],
+              "width": 720,
+              "height": 720
+            }
+          ],
+          "video": {
+            "url": "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383",
+            "urls": [
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383"
+            ],
+            "width": 1080,
+            "height": 1920,
+            "bitrate": null,
+            "format": "mp4",
+            "size_bytes": 4183220,
+            "watermark": false
+          },
+          "streams": [
+            {
+              "url": "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=1080&a=6383",
+              "urls": [
+                "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=1080&a=6383",
+                "https://v26-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=1080&a=6383"
+              ],
+              "width": 1080,
+              "height": 1920,
+              "bitrate": 2185330,
+              "format": "mp4",
+              "size_bytes": 4183220,
+              "watermark": false
+            },
+            {
+              "url": "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=720&a=6383",
+              "urls": [
+                "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=720&a=6383",
+                "https://v26-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=720&a=6383"
+              ],
+              "width": 720,
+              "height": 1280,
+              "bitrate": 1120450,
+              "format": "mp4",
+              "size_bytes": 2143010,
+              "watermark": false
+            },
+            {
+              "url": "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383&watermark=1",
+              "urls": [
+                "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383&watermark=1",
+                "https://v26-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383&watermark=1"
+              ],
+              "width": 1080,
+              "height": 1920,
+              "bitrate": null,
+              "format": "mp4",
+              "size_bytes": 4519880,
+              "watermark": true
+            }
+          ],
+          "images": []
+        }
+      },
+      "plan": {
+        "items": [
+          {
+            "name": "video.mp4",
+            "kind": "video",
+            "mirrors": [
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383",
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=1080&a=6383",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=1080&a=6383",
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=720&a=6383",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?br=720&a=6383",
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383&watermark=1",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-normal-01/?ratio=1080p&a=6383&watermark=1"
+            ],
+            "accept": [
+              "video/",
+              "application/octet-stream"
+            ],
+            "max_bytes": 536870912
+          },
+          {
+            "name": "cover.jpeg",
+            "kind": "cover",
+            "mirrors": [
+              "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-cover.jpeg",
+              "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-normal-01-cover.jpeg"
+            ],
+            "accept": [
+              "image/"
+            ],
+            "max_bytes": 33554432
+          }
+        ],
+        "skipped": []
+      }
+    },
+    {
+      "fixture": "video_long_desc",
+      "content": {
+        "id": "7000000000000000005",
+        "title": "Day 12 of the road trip 🌅🚗",
+        "description": "Day 12 of the road trip 🌅🚗\nWe drove 480km before breakfast and the coffee was still better than the stuff at home ☕️\nFull vlog is up on the channel 👇\n#roadtrip #vanlife #sunrise #coffee #travel #dayinthelife",
+        "kind": "video",
+        "author": "Synthetic Creator",
+        "author_uid": "MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001",
+        "source_url": "https://www.douyin.com/video/7000000000000000005",
+        "duration": 183000,
+        "tags": [
+          "roadtrip",
+          "vanlife",
+          "sunrise",
+          "coffee",
+          "travel",
+          "dayinthelife"
+        ],
+        "music_id": "6800000000000000004",
+        "music_title": "original sound - Synthetic Creator",
+        "location": "Synthetic Desert Highway",
+        "is_deleted": false,
+        "is_private": false,
+        "manifest": {
+          "covers": [
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-origin-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-origin-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-origin-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-dynamic-cover.webp",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-dynamic-cover.webp",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-dynamic-cover.webp"
+              ],
+              "width": 720,
+              "height": 720
+            }
+          ],
+          "video": {
+            "url": "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383",
+            "urls": [
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383"
+            ],
+            "width": 1080,
+            "height": 1920,
+            "bitrate": null,
+            "format": "mp4",
+            "size_bytes": 4183220,
+            "watermark": false
+          },
+          "streams": [
+            {
+              "url": "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=1080&a=6383",
+              "urls": [
+                "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=1080&a=6383",
+                "https://v26-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=1080&a=6383"
+              ],
+              "width": 1080,
+              "height": 1920,
+              "bitrate": 2185330,
+              "format": "mp4",
+              "size_bytes": 4183220,
+              "watermark": false
+            },
+            {
+              "url": "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=720&a=6383",
+              "urls": [
+                "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=720&a=6383",
+                "https://v26-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=720&a=6383"
+              ],
+              "width": 720,
+              "height": 1280,
+              "bitrate": 1120450,
+              "format": "mp4",
+              "size_bytes": 2143010,
+              "watermark": false
+            },
+            {
+              "url": "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383&watermark=1",
+              "urls": [
+                "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383&watermark=1",
+                "https://v26-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383&watermark=1"
+              ],
+              "width": 1080,
+              "height": 1920,
+              "bitrate": null,
+              "format": "mp4",
+              "size_bytes": 4519880,
+              "watermark": true
+            }
+          ],
+          "images": []
+        }
+      },
+      "plan": {
+        "items": [
+          {
+            "name": "video.mp4",
+            "kind": "video",
+            "mirrors": [
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383",
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=1080&a=6383",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=1080&a=6383",
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=720&a=6383",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?br=720&a=6383",
+              "https://v3-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383&watermark=1",
+              "https://v26-web.douyinvod.com/video/tos/cn/synthetic-longdesc-01/?ratio=1080p&a=6383&watermark=1"
+            ],
+            "accept": [
+              "video/",
+              "application/octet-stream"
+            ],
+            "max_bytes": 536870912
+          },
+          {
+            "name": "cover.jpeg",
+            "kind": "cover",
+            "mirrors": [
+              "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-cover.jpeg",
+              "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-longdesc-01-cover.jpeg"
+            ],
+            "accept": [
+              "image/"
+            ],
+            "max_bytes": 33554432
+          }
+        ],
+        "skipped": []
+      }
+    },
+    {
+      "fixture": "video_image_album",
+      "content": {
+        "id": "7000000000000000002",
+        "title": "Six frames from the market",
+        "description": "Six frames from the market\nAll shot on film #filmphotography #market",
+        "kind": "image_album",
+        "author": "Synthetic Creator",
+        "author_uid": "MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001",
+        "source_url": "https://www.douyin.com/note/7000000000000000002",
+        "duration": 0,
+        "tags": [
+          "filmphotography",
+          "market"
+        ],
+        "music_id": "6800000000000000002",
+        "music_title": "original sound - Synthetic Creator",
+        "location": null,
+        "is_deleted": false,
+        "is_private": false,
+        "manifest": {
+          "covers": [
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-origin-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-origin-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-origin-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-dynamic-cover.webp",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-dynamic-cover.webp",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-dynamic-cover.webp"
+              ],
+              "width": 720,
+              "height": 720
+            }
+          ],
+          "video": null,
+          "streams": [],
+          "images": [
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-1.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-1.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-1.jpeg"
+              ],
+              "width": 1440,
+              "height": 1920
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-2.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-2.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-2.jpeg"
+              ],
+              "width": 1440,
+              "height": 1920
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-3.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-3.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-3.jpeg"
+              ],
+              "width": 1440,
+              "height": 1920
+            }
+          ]
+        }
+      },
+      "plan": {
+        "items": [
+          {
+            "name": "image-01.jpeg",
+            "kind": "image",
+            "mirrors": [
+              "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-1.jpeg",
+              "https://p9-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-1.jpeg"
+            ],
+            "accept": [
+              "image/"
+            ],
+            "max_bytes": 33554432
+          },
+          {
+            "name": "image-02.jpeg",
+            "kind": "image",
+            "mirrors": [
+              "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-2.jpeg",
+              "https://p9-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-2.jpeg"
+            ],
+            "accept": [
+              "image/"
+            ],
+            "max_bytes": 33554432
+          },
+          {
+            "name": "image-03.jpeg",
+            "kind": "image",
+            "mirrors": [
+              "https://p3-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-3.jpeg",
+              "https://p9-pc-sign.douyinvod.com/tos-cn-i-0813/synthetic-album-3.jpeg"
+            ],
+            "accept": [
+              "image/"
+            ],
+            "max_bytes": 33554432
+          },
+          {
+            "name": "cover.jpeg",
+            "kind": "cover",
+            "mirrors": [
+              "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-cover.jpeg",
+              "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-album-01-cover.jpeg"
+            ],
+            "accept": [
+              "image/"
+            ],
+            "max_bytes": 33554432
+          }
+        ],
+        "skipped": []
+      }
+    },
+    {
+      "fixture": "video_private",
+      "content": {
+        "id": "7000000000000000004",
+        "title": "Draft cut, not public yet",
+        "description": "Draft cut, not public yet",
+        "kind": "video",
+        "author": "Synthetic Creator",
+        "author_uid": "MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001",
+        "source_url": "https://www.douyin.com/video/7000000000000000004",
+        "duration": 8100,
+        "tags": [],
+        "music_id": "6800000000000000003",
+        "music_title": "original sound - Synthetic Creator",
+        "location": null,
+        "is_deleted": false,
+        "is_private": true,
+        "manifest": {
+          "covers": [
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-origin-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-origin-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-origin-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            },
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-dynamic-cover.webp",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-dynamic-cover.webp",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-dynamic-cover.webp"
+              ],
+              "width": 720,
+              "height": 720
+            }
+          ],
+          "video": null,
+          "streams": [],
+          "images": []
+        }
+      },
+      "plan": {
+        "items": [
+          {
+            "name": "cover.jpeg",
+            "kind": "cover",
+            "mirrors": [
+              "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-cover.jpeg",
+              "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-private-01-cover.jpeg"
+            ],
+            "accept": [
+              "image/"
+            ],
+            "max_bytes": 33554432
+          }
+        ],
+        "skipped": []
+      }
+    },
+    {
+      "fixture": "video_deleted",
+      "content": {
+        "id": "7000000000000000003",
+        "title": "",
+        "description": "",
+        "kind": "video",
+        "author": "Synthetic Creator",
+        "author_uid": "MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001",
+        "source_url": "https://www.douyin.com/video/7000000000000000003",
+        "duration": 0,
+        "tags": [],
+        "music_id": null,
+        "music_title": null,
+        "location": null,
+        "is_deleted": true,
+        "is_private": false,
+        "manifest": {
+          "covers": [
+            {
+              "url": "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-deleted-cover.jpeg",
+              "urls": [
+                "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-deleted-cover.jpeg",
+                "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-deleted-cover.jpeg"
+              ],
+              "width": 720,
+              "height": 720
+            }
+          ],
+          "video": null,
+          "streams": [],
+          "images": []
+        }
+      },
+      "plan": {
+        "items": [
+          {
+            "name": "cover.jpeg",
+            "kind": "cover",
+            "mirrors": [
+              "https://p3-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-deleted-cover.jpeg",
+              "https://p9-pc-sign.douyinvod.com/tos-cn-p-0015/synthetic-deleted-cover.jpeg"
+            ],
+            "accept": [
+              "image/"
+            ],
+            "max_bytes": 33554432
+          }
+        ],
+        "skipped": []
+      }
+    },
+    {
+      "fixture": "risk_control_empty",
+      "error": "UpstreamRiskControl"
+    },
+    {
+      "fixture": "risk_control_captcha",
+      "error": "UpstreamRiskControl"
+    }
+  ],
+  "authors": {
+    "queries": {
+      "profile": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&sec_user_id=MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001&publish_video_strategy_type=2&personal_center_strategy=1&msToken=fixture-token",
+      "posts": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&sec_user_id=MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001&max_cursor=0&count=20&publish_video_strategy_type=2&from_user_page=1&locate_query=false&need_time_list=1&show_live_replay_strategy=1&time_list_query=0&pc_libra_divert=Windows&whale_cut_token=&msToken=fixture-token",
+      "next": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&sec_user_id=MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001&max_cursor=1716300000000&count=20&publish_video_strategy_type=2&from_user_page=1&locate_query=false&need_time_list=1&show_live_replay_strategy=1&time_list_query=0&pc_libra_divert=Windows&whale_cut_token=&msToken=fixture-token"
+    },
+    "profile": {
+      "uid": "MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001",
+      "nickname": "Synthetic Creator",
+      "signature": "Fixture account for tests. Not a real person.",
+      "works_count": 213,
+      "follower_count": 128400,
+      "web_url": "https://www.douyin.com/user/MS4wLjABAAAA_SYNTHETIC_DOUYIN_AUTHOR_0001"
+    },
+    "page": {
+      "ids": [
+        "7000000000000000001",
+        "7000000000000000002"
+      ],
+      "cursor": "1716300000000",
+      "has_more": true
+    }
+  },
+  "personal_queries": {
+    "self": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&msToken=fixture-token",
+    "likes": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&sec_user_id=MS4wLjABAAAA_SYNTHETIC_LOGIN_OWNER_0001&max_cursor=0&count=20&publish_video_strategy_type=2&msToken=fixture-token",
+    "likes_next": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&sec_user_id=MS4wLjABAAAA_SYNTHETIC_LOGIN_OWNER_0001&max_cursor=1716300000000&count=20&publish_video_strategy_type=2&msToken=fixture-token",
+    "bookmarks": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&cursor=0&count=20&msToken=fixture-token",
+    "bookmarks_next": "device_platform=webapp&aid=6383&channel=channel_pc_web&pc_client_type=1&version_code=290100&version_name=29.1.0&cookie_enabled=true&screen_width=1920&screen_height=1080&browser_language=zh-CN&browser_platform=Win32&browser_name=Chrome&browser_version=146.0.0.0&browser_online=true&engine_name=Blink&engine_version=146.0.0.0&os_name=Windows&os_version=10&cpu_core_num=12&device_memory=8&platform=PC&downlink=10&effective_type=4g&round_trip_time=0&update_version_code=170400&cursor=20&count=20&msToken=fixture-token"
+  }
+}

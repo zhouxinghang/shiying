@@ -1,0 +1,1 @@
+Build the frontend with: cd ui && npm ci && npm run build

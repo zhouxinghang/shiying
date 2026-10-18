@@ -1,0 +1,13 @@
+services:
+  shiying:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      SHIYING_ACCESS_TOKEN: ${SHIYING_ACCESS_TOKEN:?请设置一个足够长的访问口令}
+    volumes:
+      - shiying-data:/data
+    restart: unless-stopped
+
+volumes:
+  shiying-data:

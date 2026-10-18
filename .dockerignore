@@ -1,0 +1,6 @@
+data
+bin
+ui/node_modules
+internal/web/static/assets
+internal/web/static/index.html
+**/.DS_Store
