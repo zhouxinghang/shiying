@@ -7,12 +7,16 @@ RUN npm run build
 
 FROM golang:1.24-alpine AS server
 WORKDIR /build
+ARG GOPROXY=https://goproxy.cn,direct
+ENV GOPROXY=${GOPROXY}
 COPY go.mod go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod go mod download -x
 COPY cmd/ ./cmd/
 COPY internal/ ./internal/
 COPY --from=ui /build/internal/web/static/ ./internal/web/static/
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /shiying ./cmd/shiying
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /shiying ./cmd/shiying
 
 FROM alpine:3.22
 RUN apk add --no-cache ca-certificates && addgroup -S -g 10001 shiying && adduser -S -u 10001 -G shiying shiying && mkdir -p /data && chown shiying:shiying /data

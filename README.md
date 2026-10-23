@@ -110,7 +110,32 @@ export SHIYING_ACCESS_TOKEN='请替换成你自己的长随机口令'
 docker compose up --build -d
 ```
 
-打开 <http://127.0.0.1:8080>，输入刚才设置的口令。命名卷 `shiying-data` 保存 SQLite 和视频。Compose 默认只向本机映射端口；需要局域网访问时自行修改 `ports`。
+打开 <http://127.0.0.1:8081>，输入刚才设置的口令。项目下的 `./data` 目录保存 SQLite 和视频。Compose 将主机的 `8081` 端口映射到容器的 `8080`，局域网设备可通过主机 IP 访问。
+
+构建使用 BuildKit。Go 依赖默认通过 `https://goproxy.cn,direct` 下载，保留默认的校验和数据库验证；模块下载和编译缓存会在同一构建器上复用。
+
+如果构建停在 `RUN go mod download`，先中止当前构建，再显示完整下载日志重新构建：
+
+```bash
+docker compose --progress plain build shiying
+docker compose up -d
+```
+
+Dockerfile 中的 `go mod download -x` 会显示正在访问的地址和请求结果。`modernc.org/sqlite` 及其依赖较大，首次下载可能需要等待；如果出现超时、DNS 或 TLS 错误，应检查构建器的网络和代理。
+
+可通过环境变量更换 Compose 使用的模块代理，例如网络能够访问 Go 官方代理时：
+
+```bash
+GOPROXY=https://proxy.golang.org,direct docker compose --progress plain build shiying
+```
+
+直接使用 Docker 构建时，通过构建参数覆盖：
+
+```bash
+docker build --progress=plain --build-arg GOPROXY=https://proxy.golang.org,direct -t shiying .
+```
+
+只在主机执行 `go env -w GOPROXY=...` 不会修改镜像构建环境。`GOPROXY` 中逗号后的 `direct` 只在代理返回 404 / 410 时回退，不会解决代理本身的连接超时。不要通过清空缓存或关闭校验和验证来处理网络问题。
 
 备份前停止服务，再备份整个数据目录或 Docker 卷，避免漏掉 SQLite WAL 文件。
 
