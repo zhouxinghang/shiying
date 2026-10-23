@@ -41,6 +41,7 @@ import {
   Search,
   Settings2,
   ShieldCheck,
+  Shuffle,
   Sparkles,
   Trash2,
   Video as VideoIcon,
@@ -51,6 +52,7 @@ import { AccountPage } from "@/components/account-page";
 import { AuthorPage, type AuthorTarget } from "@/components/author-page";
 import { AlbumGallery } from "@/components/album-gallery";
 import { LibraryAuthorGroups } from "@/components/library-author-groups";
+import { RandomAlbumBrowser } from "@/components/random-album-browser";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -76,6 +78,7 @@ type Page =
   | "library"
   | "tasks"
   | "favorites"
+  | "random"
   | "account"
   | "authors"
   | "settings"
@@ -85,6 +88,7 @@ const pages: Record<Page, string> = {
   library: "作品库",
   tasks: "下载任务",
   favorites: "本地收藏",
+  random: "随机看图",
   authors: "作者作品",
   account: "抖音账号",
   settings: "偏好设置",
@@ -139,6 +143,7 @@ export default function App() {
   const parseController = useRef<AbortController | null>(null);
   const fetching = useRef(false);
   const textarea = useRef<HTMLTextAreaElement>(null);
+  const randomViewer = useRef<HTMLElement>(null);
 
   const notify = useCallback(
     (message: string, error = false) => setToast({ message, error }),
@@ -295,6 +300,21 @@ export default function App() {
       setPending("");
     }
   }
+  async function favoriteAlbum(task: Task) {
+    if (pending) throw new Error("请等待当前操作完成后重试");
+    setPending(task.id);
+    try {
+      await api(`/tasks/${task.id}/favorite`, "PATCH", { favorite: true });
+      setLibrary((current) => ({
+        ...current,
+        tasks: current.tasks.map((item) =>
+          item.id === task.id ? { ...item, favorite: true } : item,
+        ),
+      }));
+    } finally {
+      setPending("");
+    }
+  }
   useEffect(() => {
     if (
       preview?.account_scope &&
@@ -310,7 +330,18 @@ export default function App() {
 
   if (needsAuth) return <Login onLogin={load} />;
   return (
-    <div className="app-shell">
+    <div className={cn("app-shell", page === "random" && "random-browsing")}>
+      {page === "random" && (
+        <RandomAlbumBrowser
+          tasks={library.tasks}
+          loading={loading}
+          keyboardEnabled={!selected && !preview}
+          viewerRef={randomViewer}
+          onFavorite={favoriteAlbum}
+          onOpen={setSelected}
+          onExit={() => navigate("library")}
+        />
+      )}
       {mobileMenu && (
         <button
           className="sidebar-scrim"
@@ -338,6 +369,7 @@ export default function App() {
                 { key: "library", icon: Film },
                 { key: "tasks", icon: FolderDown },
                 { key: "favorites", icon: Heart },
+                { key: "random", icon: Shuffle },
                 { key: "authors", icon: UsersRound },
                 { key: "account", icon: ShieldCheck },
               ] as const
@@ -814,6 +846,11 @@ export default function App() {
         onAction={taskAction}
         pending={pending}
         onAuthor={openAuthor}
+        onReturnFocus={
+          page === "random"
+            ? () => randomViewer.current?.focus({ preventScroll: true })
+            : undefined
+        }
       />
       {toast && (
         <div
@@ -1341,6 +1378,7 @@ function TaskDialog({
   onAction,
   pending,
   onAuthor,
+  onReturnFocus,
 }: {
   task?: Task;
   open: boolean;
@@ -1351,6 +1389,7 @@ function TaskDialog({
   ) => Promise<void>;
   pending: string;
   onAuthor: (content: Video) => void;
+  onReturnFocus?: () => void;
 }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [playbackError, setPlaybackError] = useState(false);
@@ -1393,6 +1432,14 @@ function TaskDialog({
       }}
     >
       <DialogContent
+        onCloseAutoFocus={
+          onReturnFocus
+            ? (event) => {
+                event.preventDefault();
+                onReturnFocus();
+              }
+            : undefined
+        }
         onEscapeKeyDown={(event) => {
           if (!confirmDelete && narrow && infoVisible) {
             event.preventDefault();

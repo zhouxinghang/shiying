@@ -15,7 +15,7 @@ dev:
 
 test:
 	go test -race ./...
-	cd ui && npm run typecheck
+	cd ui && npm run typecheck && npm test
 
 clean:
 	rm -rf bin internal/web/static/assets internal/web/static/index.html
