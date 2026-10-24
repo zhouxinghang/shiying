@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -90,27 +89,34 @@ func (r *Resolver) webJSONWithCookie(ctx context.Context, method, endpoint strin
 		return nil, fmt.Errorf("连接抖音接口失败，请稍后重试")
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		logUpstreamHTTPFailure(resp)
+	}
 	if resp.StatusCode == 401 || resp.StatusCode == 403 || resp.StatusCode == 429 {
 		return nil, &ParseError{"UPSTREAM_RISK_CONTROL", fmt.Sprintf("抖音接口返回 HTTP %d，请更新 Cookie 或稍后重试", resp.StatusCode)}
 	}
 	if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("抖音接口返回 HTTP %d", resp.StatusCode)
 	}
-	body, err := io.ReadAll(io.LimitReader(resp.Body, 16<<20+1))
-	if err != nil || len(body) > 16<<20 {
+	body, err := readUpstreamBody(resp, 16<<20)
+	if err != nil {
 		return nil, fmt.Errorf("读取抖音数据失败或响应过大")
 	}
 	var root map[string]any
 	dec := json.NewDecoder(strings.NewReader(string(body)))
 	dec.UseNumber()
-	if dec.Decode(&root) != nil || len(root) == 0 {
+	if err = dec.Decode(&root); err != nil || len(root) == 0 {
+		logUpstreamFailure(resp, "decode_json", body, err)
 		return nil, &ParseError{"UPSTREAM_RISK_CONTROL", "抖音返回空数据或验证页面，请更新 Cookie 或稍后重试"}
 	}
 	if err = riskControl(root); err != nil {
+		logUpstreamFailure(resp, "risk_control", body, err)
 		return nil, err
 	}
 	if code := number(root["status_code"]); code != 0 {
-		return nil, &ParseError{"UPSTREAM_BUSINESS_ERROR", fmt.Sprintf("抖音接口未返回数据（状态码 %d），请确认 Cookie 有效且页面可访问", code)}
+		err = &ParseError{"UPSTREAM_BUSINESS_ERROR", fmt.Sprintf("抖音接口未返回数据（状态码 %d），请确认 Cookie 有效且页面可访问", code)}
+		logUpstreamFailure(resp, "business_status", body, err)
+		return nil, err
 	}
 	return root, nil
 }

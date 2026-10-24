@@ -380,6 +380,7 @@ func (q *Queue) fetchOne(ctx context.Context, item PlannedItem, raw, dest string
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
+		logUpstreamHTTPFailure(resp)
 		return StoredFile{}, fmt.Errorf("媒体源返回 HTTP %d", resp.StatusCode)
 	}
 	ct := resp.Header.Get("Content-Type")
@@ -391,6 +392,7 @@ func (q *Queue) fetchOne(ctx context.Context, item PlannedItem, raw, dest string
 		}
 	}
 	if !accepted {
+		logUpstreamFailure(resp, "content_type", nil, fmt.Errorf("媒体类型与 %s 不匹配", item.Kind))
 		label := "图片"
 		if item.Kind == "video" {
 			label = "视频"
@@ -398,6 +400,7 @@ func (q *Queue) fetchOne(ctx context.Context, item PlannedItem, raw, dest string
 		return StoredFile{}, fmt.Errorf("媒体源返回了非%s内容", label)
 	}
 	if resp.ContentLength > item.MaxBytes {
+		logUpstreamFailure(resp, "response_too_large", nil, fmt.Errorf("文件超过 %d 字节下载上限", item.MaxBytes))
 		return StoredFile{}, fmt.Errorf("文件超过 %d 字节下载上限", item.MaxBytes)
 	}
 	partial := dest + ".part"
@@ -427,6 +430,7 @@ func (q *Queue) fetchOne(ctx context.Context, item PlannedItem, raw, dest string
 			}
 			written += int64(n)
 			if written > item.MaxBytes {
+				logUpstreamFailure(resp, "response_too_large", nil, fmt.Errorf("文件超过 %d 字节下载上限", item.MaxBytes))
 				return StoredFile{}, fmt.Errorf("文件超过 %d 字节下载上限", item.MaxBytes)
 			}
 			if progress != nil {
@@ -437,10 +441,12 @@ func (q *Queue) fetchOne(ctx context.Context, item PlannedItem, raw, dest string
 			break
 		}
 		if readErr != nil {
+			logUpstreamFailure(resp, "read_body", nil, readErr)
 			return StoredFile{}, fmt.Errorf("媒体传输中断，请重试")
 		}
 	}
 	if written == 0 {
+		logUpstreamFailure(resp, "read_body", nil, fmt.Errorf("媒体内容为空"))
 		return StoredFile{}, fmt.Errorf("媒体内容为空")
 	}
 	if err = f.Sync(); err != nil {

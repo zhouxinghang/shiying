@@ -140,7 +140,7 @@ func (r *Resolver) Resolve(ctx context.Context, input string) (Content, error) {
 		if ctx.Err() != nil {
 			return Content{}, ctx.Err()
 		}
-		body, _, e := r.page(ctx, target, cookie)
+		body, resp, e := r.page(ctx, target, cookie)
 		if e != nil {
 			failures = append(failures, e)
 			continue
@@ -148,6 +148,7 @@ func (r *Resolver) Resolve(ctx context.Context, input string) (Content, error) {
 		if c, e := parsePage(body, id); e == nil {
 			return c, nil
 		} else {
+			logUpstreamFailure(resp, "parse_content", body, e)
 			failures = append(failures, e)
 		}
 	}
@@ -190,13 +191,18 @@ func (r *Resolver) expand(ctx context.Context, raw string) (string, error) {
 			}
 			return "", fmt.Errorf("展开抖音短链接失败，请检查网络")
 		}
-		_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, 4096))
+		if resp.StatusCode >= http.StatusBadRequest {
+			logUpstreamHTTPFailure(resp)
+		} else {
+			_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, 4096))
+		}
 		resp.Body.Close()
 		if resp.StatusCode != 301 && resp.StatusCode != 302 && resp.StatusCode != 303 && resp.StatusCode != 307 && resp.StatusCode != 308 {
 			return raw, nil
 		}
 		location, err := resp.Location()
 		if err != nil {
+			logUpstreamFailure(resp, "redirect", nil, err)
 			return "", fmt.Errorf("短链接返回了无效的跳转地址")
 		}
 		raw = location.String()
@@ -218,35 +224,43 @@ func (r *Resolver) detail(ctx context.Context, id, cookie string) (Content, erro
 		return Content{}, fmt.Errorf("连接抖音作品详情接口失败")
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		logUpstreamHTTPFailure(resp)
+	}
 	if resp.StatusCode == 401 || resp.StatusCode == 403 || resp.StatusCode == 429 {
 		return Content{}, &ParseError{"UPSTREAM_RISK_CONTROL", fmt.Sprintf("抖音作品接口返回 HTTP %d，请更新完整 Cookie 或稍后重试", resp.StatusCode)}
 	}
 	if resp.StatusCode != 200 {
 		return Content{}, fmt.Errorf("抖音作品接口返回 HTTP %d", resp.StatusCode)
 	}
-	body, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20+1))
-	if err != nil || len(body) > 8<<20 {
+	body, err := readUpstreamBody(resp, 8<<20)
+	if err != nil {
 		return Content{}, fmt.Errorf("抖音作品数据读取失败或过大")
 	}
-	return parsePage(body, id)
+	c, err := parsePage(body, id)
+	if err != nil {
+		logUpstreamFailure(resp, "parse_content", body, err)
+	}
+	return c, err
 }
-func (r *Resolver) page(ctx context.Context, raw, cookie string) ([]byte, string, error) {
+func (r *Resolver) page(ctx context.Context, raw, cookie string) ([]byte, *http.Response, error) {
 	resp, err := request(ctx, r.client, raw, cookie, pageDomains)
 	if err != nil {
 		if ctx.Err() != nil {
-			return nil, "", ctx.Err()
+			return nil, nil, ctx.Err()
 		}
-		return nil, "", fmt.Errorf("连接抖音分享页失败，请检查网络")
+		return nil, nil, fmt.Errorf("连接抖音分享页失败，请检查网络")
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		return nil, "", fmt.Errorf("抖音分享页返回 HTTP %d", resp.StatusCode)
+		logUpstreamHTTPFailure(resp)
+		return nil, resp, fmt.Errorf("抖音分享页返回 HTTP %d", resp.StatusCode)
 	}
-	body, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20+1))
-	if err != nil || len(body) > 8<<20 {
-		return nil, "", fmt.Errorf("抖音页面读取失败或过大")
+	body, err := readUpstreamBody(resp, 8<<20)
+	if err != nil {
+		return nil, resp, fmt.Errorf("抖音页面读取失败或过大")
 	}
-	return body, resp.Request.URL.String(), nil
+	return body, resp, nil
 }
 
 func parsePage(body []byte, id string) (Content, error) {

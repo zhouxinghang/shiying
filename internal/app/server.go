@@ -650,12 +650,21 @@ func (s *Server) proxyImages(w http.ResponseWriter, r *http.Request, mirrors []s
 		kind := strings.ToLower(strings.Split(resp.Header.Get("Content-Type"), ";")[0])
 		allowed := kind == "image/jpeg" || kind == "image/png" || kind == "image/webp" || kind == "image/avif" || kind == "image/gif" || kind == "image/heic" || kind == "image/heif"
 		if resp.StatusCode != 200 || !allowed || resp.ContentLength > imageMaxBytes {
+			if resp.StatusCode != 200 {
+				logUpstreamHTTPFailure(resp)
+			} else {
+				logUpstreamFailure(resp, "image_response", nil, fmt.Errorf("图片响应类型不支持或超过大小上限"))
+			}
 			resp.Body.Close()
 			continue
 		}
 		body, e := io.ReadAll(io.LimitReader(resp.Body, imageMaxBytes+1))
 		resp.Body.Close()
 		if e != nil || len(body) == 0 || int64(len(body)) > imageMaxBytes {
+			if e == nil {
+				e = fmt.Errorf("图片内容为空或超过大小上限")
+			}
+			logUpstreamFailure(resp, "read_body", nil, e)
 			continue
 		}
 		w.Header().Set("Content-Type", kind)

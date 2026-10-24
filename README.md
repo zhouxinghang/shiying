@@ -61,6 +61,8 @@ SHIYING_DATA_DIR=/你的磁盘/拾影 ./bin/shiying
 
 Cookie 存在本机 SQLite 中，设置接口返回配置状态与随机版本标识，不回显原文；不会转发到视频 CDN。本人资料只提取昵称、头像、公开资料和作品计数，不保存本人资料接口的完整响应。数据目录包含登录凭据和私有列表缓存，请妥善保管。仅下载你有权保存的内容。
 
+抖音请求失败时，服务会向标准错误输出 `WARN` 日志，记录失败阶段（`stage`）、请求方法与接口、作品 / 作者 ID 或分页参数、耗时、Cookie 是否已配置、HTTP 状态、响应类型、平台状态码与错误提示，以及上游返回的 `X-Tt-Logid` / `X-Request-Id` 和 `Retry-After`（如有）。HTTP 错误响应最多读取 4 KiB 用于诊断；只提取 JSON 状态与提示或 HTML 标题，提示最多保留 512 个字符，不输出完整响应、Cookie、签名和 URL 查询凭据。回退请求中的失败也会记录，成功请求不打印失败日志。Docker 部署可通过 `docker compose logs -f shiying` 查看。
+
 ### Cookie 本人的喜欢与收藏
 
 - 需要登录后的完整 Cookie，包含 `sessionid` / `sessionid_ss` / `sid_tt` 等登录会话。服务通过 `/user/profile/self/` 确认本人身份；不会将游客 `query/user` 返回的 ID 当成登录账号，也不接受填写他人 ID 来读取个人列表。

@@ -136,5 +136,11 @@ func requestMethod(ctx context.Context, client *http.Client, method, raw, cookie
 	if cookie != "" && allowedURL(raw, pageDomains) && req.URL.Scheme == "https" {
 		req.Header.Set("Cookie", cookie)
 	}
-	return client.Do(req)
+	l := &upstreamLog{started: time.Now(), request: req}
+	req = req.WithContext(context.WithValue(req.Context(), upstreamLogKey{}, l))
+	resp, err := client.Do(req)
+	if err != nil {
+		l.failure("request", resp, nil, err)
+	}
+	return resp, err
 }
