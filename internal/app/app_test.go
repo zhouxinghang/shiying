@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -151,14 +150,6 @@ func TestPlaybackGatewayRedirectDoesNotSendCookie(t *testing.T) {
 	}
 }
 func TestNetworkBoundary(t *testing.T) {
-	for _, raw := range []string{"127.0.0.1", "10.0.0.1", "169.254.169.254", "100.64.1.1", "::1", "::ffff:192.168.1.1", "2001:db8::1", "198.18.1.1", "224.0.0.1", "0.0.0.0", "240.1.1.1"} {
-		if publicIP(net.ParseIP(raw)) {
-			t.Fatal("accepted private/reserved IP", raw)
-		}
-	}
-	if !publicIP(net.ParseIP("8.8.8.8")) || !publicIP(net.ParseIP("2606:4700:4700::1111")) {
-		t.Fatal("public IP refused")
-	}
 	client := newHTTPClient(pageDomains, time.Second)
 	for _, raw := range []string{"http://127.0.0.1/", "https://evil.test/", "file:///etc/passwd"} {
 		u, _ := url.Parse(raw)

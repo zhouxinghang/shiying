@@ -42,10 +42,15 @@ func (l *upstreamLog) text(value string) string {
 		}
 		return upstreamLogURL(u)
 	})
-	// Redact credentials even when an upstream message echoes a value without
-	// its field name. Include generated query tokens and signature headers.
-	secrets := []string{l.request.Header.Get("Cookie")}
+	// Redact complete cookie fields, including short values, by field name.
+	// Do not replace short bare values such as "1": they are also present in
+	// API versions, IP addresses, and other useful diagnostic information.
+	if cookie := l.request.Header.Get("Cookie"); cookie != "" {
+		value = strings.ReplaceAll(value, cookie, "[REDACTED]")
+	}
+	var secrets []string
 	for _, cookie := range l.request.Cookies() {
+		value = strings.ReplaceAll(value, cookie.Name+"="+cookie.Value, cookie.Name+"=[REDACTED]")
 		secrets = append(secrets, cookie.Value)
 	}
 	for key, values := range l.request.URL.Query() {
@@ -57,7 +62,9 @@ func (l *upstreamLog) text(value string) string {
 		secrets = append(secrets, l.request.Header.Get(key))
 	}
 	for _, secret := range secrets {
-		if secret != "" {
+		// Longer credentials may also be echoed without their field names.
+		// Named short credentials are handled above and by logSecretPattern.
+		if len(secret) >= 8 {
 			value = strings.ReplaceAll(value, secret, "[REDACTED]")
 			value = strings.ReplaceAll(value, url.QueryEscape(secret), "[REDACTED]")
 		}

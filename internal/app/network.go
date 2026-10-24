@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	"net/netip"
 	"net/url"
 	"strings"
-	"syscall"
 	"time"
 )
 
@@ -67,36 +65,9 @@ func normalizeMediaURL(raw string) string {
 	return raw
 }
 
-func publicIP(ip net.IP) bool {
-	addr, ok := netip.AddrFromSlice(ip)
-	if !ok {
-		return false
-	}
-	addr = addr.Unmap()
-	if !addr.IsGlobalUnicast() || addr.IsPrivate() || addr.IsLoopback() || addr.IsLinkLocalUnicast() {
-		return false
-	}
-	for _, prefix := range []string{"0.0.0.0/8", "100.64.0.0/10", "192.0.0.0/24", "192.0.2.0/24", "198.18.0.0/15", "198.51.100.0/24", "203.0.113.0/24", "240.0.0.0/4", "2001:db8::/32", "2001::/32", "2002::/16", "64:ff9b::/96"} {
-		if netip.MustParsePrefix(prefix).Contains(addr) {
-			return false
-		}
-	}
-	return true
-}
-
 func newHTTPClient(domains []string, timeout time.Duration) *http.Client {
-	dialer := &net.Dialer{Timeout: 15 * time.Second, KeepAlive: 30 * time.Second, Control: func(_, address string, _ syscall.RawConn) error {
-		host, _, err := net.SplitHostPort(address)
-		if err != nil {
-			return err
-		}
-		if !publicIP(net.ParseIP(host)) {
-			return fmt.Errorf("拒绝访问非公网地址")
-		}
-		return nil
-	}}
+	dialer := &net.Dialer{Timeout: 15 * time.Second, KeepAlive: 30 * time.Second}
 	transport := &http.Transport{DialContext: dialer.DialContext, TLSHandshakeTimeout: 15 * time.Second, ResponseHeaderTimeout: 30 * time.Second, MaxIdleConns: 32, IdleConnTimeout: 60 * time.Second, DisableCompression: true}
-	// Do not use a proxy from the environment: it would bypass the IP guard.
 	return &http.Client{Timeout: timeout, Transport: transport, CheckRedirect: func(req *http.Request, via []*http.Request) error {
 		if len(via) >= 8 || !allowedURL(req.URL.String(), domains) {
 			return fmt.Errorf("重定向地址不在允许的抖音域名中")

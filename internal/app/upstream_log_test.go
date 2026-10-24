@@ -65,6 +65,25 @@ func TestUpstreamNetworkFailureLogRedactsCredentials(t *testing.T) {
 	}
 }
 
+func TestUpstreamShortCookieValuesPreserveNetworkDiagnostics(t *testing.T) {
+	output := captureUpstreamLogs(t)
+	client := &http.Client{Transport: roundTripFunc(func(req *http.Request) (*http.Response, error) {
+		return nil, fmt.Errorf("dial tcp 198.18.1.16:443: connect: connection refused; sessionid=x; flag=1")
+	})}
+	_, err := request(context.Background(), client, "https://www.douyin.com/aweme/v1/web/user/profile/self/", "flag=1; enabled=true; retries=0; sessionid=x", pageDomains)
+	if err == nil {
+		t.Fatal("expected network failure")
+	}
+	record := upstreamLogRecord(t, output)
+	message := record["error"].(string)
+	if !strings.Contains(message, "/aweme/v1/web/user/profile/self/") || !strings.Contains(message, "198.18.1.16:443") {
+		t.Fatalf("short cookie values obscured diagnostics: %s", output)
+	}
+	if strings.Contains(message, "sessionid=x") || strings.Contains(message, "flag=1") {
+		t.Fatalf("named cookie values leaked: %s", output)
+	}
+}
+
 func TestUpstreamAPIFailureDiagnostics(t *testing.T) {
 	for _, tc := range []struct {
 		name   string
